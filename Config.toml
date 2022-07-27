@@ -1,0 +1,5 @@
+dbHost = ""
+dbUser = ""
+dbPassword = ""
+dbName = "netsuite_sync"
+dbPort = 3306
