@@ -2,24 +2,24 @@ import ballerina/graphql;
 
 service /graphql on new graphql:Listener(9090) {
 
-     resource function get incomeSummary(DatePeriodFilterCriteria datePeriodFilterCriteria) returns SummaryRecord[]|error? {
+     resource function get incomeSummary(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error? {
 
-        return loadDynamicIncomeSummaryData(datePeriodFilterCriteria);
+        return loadDynamicIncomeSummaryData(filterCriteria);
     }
 
-    resource function get expenseSummary(DatePeriodFilterCriteria datePeriodFilterCriteria) returns SummaryRecord[]|error? {
+    resource function get expenseSummary(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error? {
 
-        return loadDynamicExpenseSummaryData(datePeriodFilterCriteria);
+        return loadDynamicExpenseSummaryData(filterCriteria);
     }
 
-    resource function get incomeAccount(IncomeAccountFilterCriteria incomeAccountFilterCriteria) returns AccountRecord[]|error? {
+    resource function get incomeAccount(IncomeAccountFilterCriteria filterCriteria) returns AccountRecord[]|error? {
 
-        return loadDynamicIncomeAccountData(incomeAccountFilterCriteria);
+        return loadDynamicIncomeAccountData(filterCriteria);
     }
 
-    resource function get expenseAccount(ExpenseAccountFilterCriteria expenseAccountFilterCriteria) returns AccountRecord[]|error? {
+    resource function get expenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns AccountRecord[]|error? {
 
-        return loadDynamicExpenseAccountData(expenseAccountFilterCriteria);
+        return loadDynamicExpenseAccountData(filterCriteria);
     }
 
     

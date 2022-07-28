@@ -26,7 +26,7 @@ service class SummaryRecord {
 }
 
 
-function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria datePeriodFilterCriteria) returns SummaryRecord[]|error {
+function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
  sql:ParameterizedQuery query = `SELECT account_type, 
                    account_category, 
@@ -35,8 +35,8 @@ function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria datePeriodFilterC
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
                    AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount  
             FROM mis_income 
-            WHERE trandate > SUBSTRING(${datePeriodFilterCriteria.startDate}, 1, 7) AND 
-                  trandate <= SUBSTRING(${datePeriodFilterCriteria.endDate}, 1, 7)
+            WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
+                  trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
             GROUP BY account_type, account_category, mis_flash_section, business_unit`;
 
             SummaryRecord[]|error response = runQuerySummaryRecord(query);
@@ -44,7 +44,7 @@ function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria datePeriodFilterC
     return response;
 }
 
-function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria datePeriodFilterCriteria) returns SummaryRecord[]|error {
+function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
  sql:ParameterizedQuery query = `SELECT account_type, 
                    account_category, 
@@ -53,8 +53,8 @@ function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria datePeriodFilter
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
                    AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount  
             FROM mis_expense 
-            WHERE trandate > SUBSTRING(${datePeriodFilterCriteria.startDate}, 1, 7) AND 
-                  trandate <= SUBSTRING(${datePeriodFilterCriteria.endDate}, 1, 7)
+            WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
+                  trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
             GROUP BY account_type, account_category, mis_flash_section, business_unit`;
 
             SummaryRecord[]|error response = runQuerySummaryRecord(query);

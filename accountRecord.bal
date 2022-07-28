@@ -34,28 +34,28 @@ service class AccountRecord {
 }
 
 
-function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria incomeAccountFilterCriteria) returns AccountRecord[]|error {
+function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
 
  sql:ParameterizedQuery query = `SELECT id, internalid, account, amount, mis_updated_value, comment
             FROM mis_income
             WHERE account_type = 'Income' AND
-                  account_category = ${incomeAccountFilterCriteria.account_category} AND
-                  business_unit = ${incomeAccountFilterCriteria.business_unit} AND
-                  trandate = ${incomeAccountFilterCriteria.trandate}`;
+                  account_category = ${filterCriteria.account_category} AND
+                  business_unit = ${filterCriteria.business_unit} AND
+                  trandate = ${filterCriteria.trandate}`;
 
             AccountRecord[]|error response = runQueryAccountRecord(query);
     return response;
 }
 
-function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria expenseAccountFilterCriteria) returns AccountRecord[]|error {
+function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
 
  sql:ParameterizedQuery query = `SELECT id, internalid, account, amount, mis_updated_value, comment
             FROM mis_expense
             WHERE account_type = 'Cost of Goods Sold' AND
-                  account_category = ${expenseAccountFilterCriteria.account_category} AND
-                  mis_flash_section = ${expenseAccountFilterCriteria.mis_flash_section} AND
-                  business_unit = ${expenseAccountFilterCriteria.business_unit} AND
-                  trandate = ${expenseAccountFilterCriteria.trandate}`;
+                  account_category = ${filterCriteria.account_category} AND
+                  mis_flash_section = ${filterCriteria.mis_flash_section} AND
+                  business_unit = ${filterCriteria.business_unit} AND
+                  trandate = ${filterCriteria.trandate}`;
 
             AccountRecord[]|error response = runQueryAccountRecord(query);
     return response;
