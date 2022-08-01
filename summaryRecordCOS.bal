@@ -7,23 +7,23 @@ service class SummaryRecordCOS {
         self.data = data.cloneReadOnly();
     }
 
-    resource function get accountType() returns string? {
+    resource function get AccountType() returns string? {
         return self.data.account_type;
     }
 
-    resource function get accountCategory() returns string? {
+    resource function get AccountCategory() returns string? {
         return self.data.account_category;
     }
 
-    resource function get costType() returns string? {
+    resource function get CostType() returns string? {
         return self.data.cost_type;
     }
 
-    resource function get businessUnit() returns string? {
+    resource function get BusinessUnit() returns string? {
         return self.data.business_unit;
     }
 
-    resource function get amount() returns decimal? {
+    resource function get Amount() returns decimal? {
         return self.data.amount;
     }
 

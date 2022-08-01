@@ -7,27 +7,27 @@ service class AccountRecord {
         self.data = data.cloneReadOnly();
     }
 
-    resource function get id() returns int? {
+    resource function get Id() returns int? {
         return self.data.id;
     }
     
-     resource function get internalId() returns int? {
+     resource function get InternalId() returns int? {
         return self.data.internalid;
     }
 
-    resource function get account() returns string? {
+    resource function get Account() returns string? {
         return self.data.account;
     }
 
-    resource function get comment() returns string? {
+    resource function get Comment() returns string? {
         return self.data.comment;
     }
 
-    resource function get misUpdatedValue() returns decimal? {
+    resource function get MisUpdatedValue() returns decimal? {
         return self.data.mis_updated_value;
     }
 
-    resource function get amount() returns decimal? {
+    resource function get Amount() returns decimal? {
         return self.data.amount;
     }
 
