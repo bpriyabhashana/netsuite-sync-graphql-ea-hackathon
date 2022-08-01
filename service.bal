@@ -2,12 +2,12 @@ import ballerina/graphql;
 
 service /graphql on new graphql:Listener(9090) {
 
-     resource function get incomeSummary(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error? {
+     resource function get income(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error? {
 
         return loadDynamicIncomeSummaryData(filterCriteria);
     }
 
-    resource function get expenseSummary(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error? {
+    resource function get expense(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error? {
 
         return loadDynamicExpenseSummaryData(filterCriteria);
     }
