@@ -12,6 +12,11 @@ service /graphql on new graphql:Listener(9090) {
         return loadDynamicExpenseSummaryData(filterCriteria);
     }
 
+    resource function get expenseCOS(DatePeriodFilterCriteria filterCriteria) returns SummaryRecordCOS[]|error? {
+
+        return loadDynamicExpenseCOSSummaryData(filterCriteria);
+    }
+
     resource function get incomeAccount(IncomeAccountFilterCriteria filterCriteria) returns AccountRecord[]|error? {
 
         return loadDynamicIncomeAccountData(filterCriteria);

@@ -5,21 +5,29 @@ type DatePeriodFilterCriteria record {
 };
 
 type IncomeAccountFilterCriteria record {
-    string account_category;
-    string business_unit;
+    string accountCategory;
+    string businessUnit;
     string trandate;
 };
 
 type ExpenseAccountFilterCriteria record {
-    string account_category;
-    string business_unit;
-    string mis_flash_section;
+    string accountCategory;
+    string businessUnit;
+    string misFlashSection;
     string trandate;
 };
 
 type SummaryRecordData record {
     string account_type;
     string account_category;
+    string business_unit;
+    decimal amount;
+};
+
+type SummaryRecordCOSData record {
+    string account_type;
+    string account_category;
+    string cost_type;
     string business_unit;
     decimal amount;
 };

@@ -7,15 +7,15 @@ service class SummaryRecord {
         self.data = data.cloneReadOnly();
     }
 
-    resource function get account_type() returns string? {
+    resource function get accountType() returns string? {
         return self.data.account_type;
     }
 
-    resource function get account_category() returns string? {
+    resource function get accountCategory() returns string? {
         return self.data.account_category;
     }
 
-    resource function get business_unit() returns string? {
+    resource function get businessUnit() returns string? {
         return self.data.business_unit;
     }
 
@@ -27,16 +27,15 @@ service class SummaryRecord {
 
 function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
-    sql:ParameterizedQuery query = `SELECT account_type, 
+    sql:ParameterizedQuery query = `SELECT account_type , 
                    account_category, 
-                   mis_flash_section, 
                    business_unit, 
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
                    AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount  
             FROM mis_income 
             WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
-            GROUP BY account_type, account_category, mis_flash_section, business_unit`;
+            GROUP BY account_type, account_category, business_unit`;
 
     SummaryRecord[]|error response = runQuerySummaryRecord(query);
 
@@ -47,19 +46,19 @@ function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria filterCriteria) 
 
     sql:ParameterizedQuery query = `SELECT account_type, 
                    account_category, 
-                   mis_flash_section, 
                    business_unit, 
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
-                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount  
-            FROM mis_expense 
+                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount
+            FROM mis_expense  
             WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
-            GROUP BY account_type, account_category, mis_flash_section, business_unit`;
+            GROUP BY account_type, account_category, business_unit`;
 
     SummaryRecord[]|error response = runQuerySummaryRecord(query);
 
     return response;
 }
+
 
 function runQuerySummaryRecord(sql:ParameterizedQuery query) returns SummaryRecord[]|error {
     SummaryRecord[]? payload = [];
