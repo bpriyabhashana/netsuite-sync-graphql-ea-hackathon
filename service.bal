@@ -23,5 +23,4 @@ service /graphql on new graphql:Listener(9090) {
     }
 
     
-
 }

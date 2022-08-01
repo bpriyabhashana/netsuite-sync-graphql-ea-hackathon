@@ -1,17 +1,17 @@
 import ballerina/sql;
 
 service class SummaryRecord {
-     private final readonly & SummaryRecordData data;
+    private final readonly & SummaryRecordData data;
 
-      function init(SummaryRecordData data) {
+    function init(SummaryRecordData data) {
         self.data = data.cloneReadOnly();
     }
 
     resource function get account_type() returns string? {
         return self.data.account_type;
     }
-    
-     resource function get account_category() returns string? {
+
+    resource function get account_category() returns string? {
         return self.data.account_category;
     }
 
@@ -25,10 +25,9 @@ service class SummaryRecord {
 
 }
 
-
 function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
- sql:ParameterizedQuery query = `SELECT account_type, 
+    sql:ParameterizedQuery query = `SELECT account_type, 
                    account_category, 
                    mis_flash_section, 
                    business_unit, 
@@ -39,14 +38,14 @@ function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) r
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
             GROUP BY account_type, account_category, mis_flash_section, business_unit`;
 
-            SummaryRecord[]|error response = runQuerySummaryRecord(query);
+    SummaryRecord[]|error response = runQuerySummaryRecord(query);
 
     return response;
 }
 
 function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
- sql:ParameterizedQuery query = `SELECT account_type, 
+    sql:ParameterizedQuery query = `SELECT account_type, 
                    account_category, 
                    mis_flash_section, 
                    business_unit, 
@@ -57,7 +56,7 @@ function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria filterCriteria) 
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
             GROUP BY account_type, account_category, mis_flash_section, business_unit`;
 
-            SummaryRecord[]|error response = runQuerySummaryRecord(query);
+    SummaryRecord[]|error response = runQuerySummaryRecord(query);
 
     return response;
 }
@@ -67,11 +66,11 @@ function runQuerySummaryRecord(sql:ParameterizedQuery query) returns SummaryReco
 
     stream<record {}, error?> resultStream = mysqlClient->query(query);
 
-    payload = check from var item in resultStream 
-            let var accRow = check item.cloneWithType(SummaryRecordData) 
-            select new SummaryRecord(accRow);
+    payload = check from var item in resultStream
+        let var accRow = check item.cloneWithType(SummaryRecordData)
+        select new SummaryRecord(accRow);
 
-    if(payload is null) {
+    if (payload is null) {
         return [];
     }
     return payload;
