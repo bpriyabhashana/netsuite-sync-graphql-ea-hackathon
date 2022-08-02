@@ -8,34 +8,35 @@ service class SummaryRecordCOS {
     }
 
     resource function get AccountType() returns string? {
-        return self.data.account_type;
+        return self.data.AccountType;
     }
 
     resource function get AccountCategory() returns string? {
-        return self.data.account_category;
+        return self.data.AccountCategory;
     }
 
-    resource function get CostType() returns string? {
-        return self.data.cost_type;
+    resource function get Type() returns string? {
+        return self.data.Type;
     }
 
     resource function get BusinessUnit() returns string? {
-        return self.data.business_unit;
+        return self.data.BusinessUnit;
     }
 
     resource function get Amount() returns decimal? {
-        return self.data.amount;
+        return self.data.Amount;
     }
 
 }
 
 function loadDynamicExpenseCOSSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecordCOS[]|error {
 
-    sql:ParameterizedQuery query = `SELECT account_type, 
-                   account_category, 
-                   mis_flash_section as cost_type, 
-                   business_unit, 
-                   SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount  
+    sql:ParameterizedQuery query = `SELECT account_type AS AccountType, 
+                   account_category AS AccountCategory, 
+                   mis_flash_section AS Type, 
+                   business_unit AS BusinessUnit, 
+                   SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
+                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Amount  
             FROM mis_expense 
             WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)

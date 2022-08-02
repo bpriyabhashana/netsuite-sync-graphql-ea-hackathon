@@ -26,27 +26,27 @@ type DateIdFilterCriteria record {
 // --------- data records ---------
 
 type SummaryRecordData record {
-    string account_type;
-    string account_category;
-    string business_unit;
-    decimal amount;
+    string AccountType;
+    string AccountCategory;
+    string BusinessUnit;
+    decimal Amount;
 };
 
 type SummaryRecordCOSData record {
-    string account_type;
-    string account_category;
-    string cost_type;
-    string business_unit;
-    decimal amount;
+    string AccountType;
+    string AccountCategory;
+    string Type;
+    string BusinessUnit;
+    decimal Amount;
 };
 
 type AccountRecordData record {
-    int id;
-    int internalid;
-    string account;
-    string? comment;
-    decimal? mis_updated_value;
-    decimal amount;
+    int Id;
+    int InternalId;
+    string Account;
+    string? Comment;
+    decimal? UpdatedValue;
+    decimal Amount;
 };
 
 type AvailabilityData record {

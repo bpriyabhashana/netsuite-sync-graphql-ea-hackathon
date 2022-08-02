@@ -8,19 +8,19 @@ service class SummaryRecord {
     }
 
     resource function get AccountType() returns string? {
-        return self.data.account_type;
+        return self.data.AccountType;
     }
 
     resource function get AccountCategory() returns string? {
-        return self.data.account_category;
+        return self.data.AccountCategory;
     }
 
     resource function get BusinessUnit() returns string? {
-        return self.data.business_unit;
+        return self.data.BusinessUnit;
     }
 
     resource function get Amount() returns decimal? {
-        return self.data.amount;
+        return self.data.Amount;
     }
 
 }
@@ -35,11 +35,11 @@ service class SummaryRecord {
 
 function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
-    sql:ParameterizedQuery query = `SELECT account_type , 
-                   account_category, 
-                   business_unit, 
+    sql:ParameterizedQuery query = `SELECT account_type AS AccountType, 
+                   account_category AS AccountCategory, 
+                   business_unit AS BusinessUnit, 
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
-                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount  
+                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Amount  
             FROM mis_income 
             WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
@@ -52,11 +52,11 @@ function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) r
 
 function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
-    sql:ParameterizedQuery query = `SELECT account_type, 
-                   account_category, 
-                   business_unit, 
+    sql:ParameterizedQuery query = `SELECT account_type as AccountType, 
+                   account_category as AccountCategory, 
+                   business_unit AS BusinessUnit, 
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
-                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS amount
+                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Amount
             FROM mis_expense  
             WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)

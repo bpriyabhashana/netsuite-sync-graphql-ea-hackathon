@@ -8,27 +8,27 @@ service class AccountRecord {
     }
 
     resource function get Id() returns int? {
-        return self.data.id;
+        return self.data.Id;
     }
     
      resource function get InternalId() returns int? {
-        return self.data.internalid;
+        return self.data.InternalId;
     }
 
     resource function get Account() returns string? {
-        return self.data.account;
+        return self.data.Account;
     }
 
     resource function get Comment() returns string? {
-        return self.data.comment;
+        return self.data.Comment;
     }
 
-    resource function get MisUpdatedValue() returns decimal? {
-        return self.data.mis_updated_value;
+    resource function get UpdatedValue() returns decimal? {
+        return self.data.UpdatedValue;
     }
 
     resource function get Amount() returns decimal? {
-        return self.data.amount;
+        return self.data.Amount;
     }
 
 }
@@ -36,7 +36,12 @@ service class AccountRecord {
 
 function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
 
- sql:ParameterizedQuery query = `SELECT id, internalid, account, amount, mis_updated_value, comment
+ sql:ParameterizedQuery query = `SELECT id AS Id, 
+            internalid AS InternalId, 
+            account AS Account, 
+            amount as Amount, 
+            mis_updated_value AS UpdatedValue, 
+            comment AS Comment
             FROM mis_income
             WHERE account_type = 'Income' AND
                   account_category = ${filterCriteria.accountCategory} AND
@@ -49,7 +54,12 @@ function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria
 
 function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
 
- sql:ParameterizedQuery query = `SELECT id, internalid, account, amount, mis_updated_value, comment
+ sql:ParameterizedQuery query = `SELECT id AS Id, 
+            internalid AS InternalId, 
+            account AS Account, 
+            amount as Amount, 
+            mis_updated_value AS UpdatedValue, 
+            comment AS Comment
             FROM mis_expense
             WHERE account_type = 'Cost of Goods Sold' AND
                   account_category = ${filterCriteria.accountCategory} AND
