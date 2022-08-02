@@ -1,5 +1,5 @@
-dbHost = ""
-dbUser = ""
-dbPassword = ""
+dbHost = "192.168.100.35"
+dbUser = "root"
+dbPassword = "cioroot"
 dbName = "netsuite_sync"
 dbPort = 3306

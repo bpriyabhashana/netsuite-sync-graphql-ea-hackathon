@@ -1,3 +1,4 @@
+// --------- filter criterias ---------
 
 type DatePeriodFilterCriteria record {
     string startDate;
@@ -16,6 +17,13 @@ type ExpenseAccountFilterCriteria record {
     string misFlashSection;
     string trandate;
 };
+
+type DateIdFilterCriteria record {
+    int id;
+    string yearMonth;
+};
+
+// --------- data records ---------
 
 type SummaryRecordData record {
     string account_type;
@@ -39,4 +47,8 @@ type AccountRecordData record {
     string? comment;
     decimal? mis_updated_value;
     decimal amount;
+};
+
+type AvailabilityData record {
+    int IsAvailable;
 };

@@ -25,6 +25,14 @@ service class SummaryRecord {
 
 }
 
+# Load income summary data based on startDate, endDate
+# e.g. startDate: "2021-02", endDate: "2021-09"
+# the result will be group by account_type, account_category, business_unit
+# if the query execution succeeded, it returns the SummaryRecord
+#
+# + filterCriteria - (refer records.bal for more details)  
+# + return - SummaryRecord[]|error  
+
 function loadDynamicIncomeSummaryData(DatePeriodFilterCriteria filterCriteria) returns SummaryRecord[]|error {
 
     sql:ParameterizedQuery query = `SELECT account_type , 
