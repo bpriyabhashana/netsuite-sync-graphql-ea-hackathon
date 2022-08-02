@@ -11,12 +11,11 @@ service class AccountAvailability {
         return self.data.IsAvailable;
     }
 
-
 }
 
 # check the availability of the account for month based on DateIdFilterCriteria
 # e.g. yearMonth: "2021-02", id: 43
-# 
+#
 # if the query execution succeeded, it returns the AccountAvailability
 #
 # + filterCriteria - (refer records.bal for more details)  
@@ -28,7 +27,6 @@ function loadAvailabilityIncomeData(DateIdFilterCriteria filterCriteria) returns
             AS IsAvailable
             FROM mis_income
             WHERE id = ${filterCriteria.id}`;
-
 
     AccountAvailability[]|error response = runQueryAvailabilityRecord(query);
 
@@ -42,12 +40,10 @@ function loadAvailabilityExpenseData(DateIdFilterCriteria filterCriteria) return
             FROM mis_expense
             WHERE id = ${filterCriteria.id}`;
 
-
     AccountAvailability[]|error response = runQueryAvailabilityRecord(query);
 
     return response;
 }
-
 
 function runQueryAvailabilityRecord(sql:ParameterizedQuery query) returns AccountAvailability[]|error {
     AccountAvailability[]? payload = [];

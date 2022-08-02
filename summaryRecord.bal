@@ -67,7 +67,6 @@ function loadDynamicExpenseSummaryData(DatePeriodFilterCriteria filterCriteria) 
     return response;
 }
 
-
 function runQuerySummaryRecord(sql:ParameterizedQuery query) returns SummaryRecord[]|error {
     SummaryRecord[]? payload = [];
 

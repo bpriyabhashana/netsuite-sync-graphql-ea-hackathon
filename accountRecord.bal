@@ -1,17 +1,17 @@
 import ballerina/sql;
 
 service class AccountRecord {
-     private final readonly & AccountRecordData data;
+    private final readonly & AccountRecordData data;
 
-      function init(AccountRecordData data) {
+    function init(AccountRecordData data) {
         self.data = data.cloneReadOnly();
     }
 
     resource function get Id() returns int? {
         return self.data.Id;
     }
-    
-     resource function get InternalId() returns int? {
+
+    resource function get InternalId() returns int? {
         return self.data.InternalId;
     }
 
@@ -33,10 +33,9 @@ service class AccountRecord {
 
 }
 
-
 function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
 
- sql:ParameterizedQuery query = `SELECT id AS Id, 
+    sql:ParameterizedQuery query = `SELECT id AS Id, 
             internalid AS InternalId, 
             account AS Account, 
             amount as Amount, 
@@ -48,13 +47,13 @@ function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria
                   business_unit = ${filterCriteria.businessUnit} AND
                   trandate = ${filterCriteria.trandate}`;
 
-            AccountRecord[]|error response = runQueryAccountRecord(query);
+    AccountRecord[]|error response = runQueryAccountRecord(query);
     return response;
 }
 
 function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
 
- sql:ParameterizedQuery query = `SELECT id AS Id, 
+    sql:ParameterizedQuery query = `SELECT id AS Id, 
             internalid AS InternalId, 
             account AS Account, 
             amount as Amount, 
@@ -67,7 +66,7 @@ function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriter
                   business_unit = ${filterCriteria.businessUnit} AND
                   trandate = ${filterCriteria.trandate}`;
 
-            AccountRecord[]|error response = runQueryAccountRecord(query);
+    AccountRecord[]|error response = runQueryAccountRecord(query);
     return response;
 }
 
@@ -76,12 +75,11 @@ function runQueryAccountRecord(sql:ParameterizedQuery query) returns AccountReco
 
     stream<record {}, error?> resultStream = mysqlClient->query(query);
 
+    payload = check from var item in resultStream
+        let var accRow = check item.cloneWithType(AccountRecordData)
+        select new AccountRecord(accRow);
 
-    payload = check from var item in resultStream 
-            let var accRow = check item.cloneWithType(AccountRecordData) 
-            select new AccountRecord(accRow);
-
-    if(payload is null) {
+    if (payload is null) {
         return [];
     }
     return payload;
