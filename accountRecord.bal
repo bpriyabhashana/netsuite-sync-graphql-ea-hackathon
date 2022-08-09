@@ -62,7 +62,7 @@ function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriter
             FROM mis_expense
             WHERE account_type = 'Cost of Goods Sold' AND
                   account_category = ${filterCriteria.accountCategory} AND
-                  mis_flash_section = ${filterCriteria.misFlashSection} AND
+                  mis_flash_section = ${filterCriteria.categoryType} AND
                   business_unit = ${filterCriteria.businessUnit} AND
                   trandate = ${filterCriteria.trandate}`;
 

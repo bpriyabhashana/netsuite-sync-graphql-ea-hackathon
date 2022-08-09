@@ -14,7 +14,7 @@ type IncomeAccountFilterCriteria record {
 type ExpenseAccountFilterCriteria record {
     string accountCategory;
     string businessUnit;
-    string misFlashSection;
+    string categoryType;
     string trandate;
 };
 
