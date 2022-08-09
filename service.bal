@@ -27,14 +27,4 @@ service /graphql on new graphql:Listener(9090) {
         return loadDynamicExpenseAccountData(filterCriteria);
     }
 
-    resource function get incomeAccountAvailability(DateIdFilterCriteria filterCriteria) returns AccountAvailability[]|error? {
-
-        return loadAvailabilityIncomeData(filterCriteria);
-    }
-
-    resource function get expenseAccountAvailability(DateIdFilterCriteria filterCriteria) returns AccountAvailability[]|error? {
-
-        return loadAvailabilityExpenseData(filterCriteria);
-    }
-
 }
