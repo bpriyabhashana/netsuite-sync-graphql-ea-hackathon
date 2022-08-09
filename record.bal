@@ -48,7 +48,3 @@ type AccountRecordData record {
     decimal? UpdatedValue;
     decimal Amount;
 };
-
-type AvailabilityData record {
-    int IsAvailable;
-};
