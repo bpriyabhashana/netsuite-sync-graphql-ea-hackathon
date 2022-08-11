@@ -1,6 +1,7 @@
 // --------- filter criterias ---------
 
-type DatePeriodFilterCriteria record {
+type BalanceFilterCriteria record {
+    string balanceType;
     string startDate;
     string endDate;
 };
@@ -18,6 +19,11 @@ type ExpenseAccountFilterCriteria record {
     string trandate;
 };
 
+type DatePeriodFilterCriteria record {
+    string startDate;
+    string endDate;
+};
+
 type DateIdFilterCriteria record {
     int id;
     string yearMonth;
@@ -25,26 +31,28 @@ type DateIdFilterCriteria record {
 
 // --------- data records ---------
 
-type SummaryRecordData record {
-    string AccountType;
-    string AccountCategory;
-    string BusinessUnit;
-    decimal Amount;
-};
 
-type SummaryRecordCOSData record {
-    string AccountType;
-    string AccountCategory;
-    string Type;
-    string BusinessUnit;
-    decimal Amount;
-};
-
-type AccountRecordData record {
+type AccountData record {
     int Id;
-    int InternalId;
-    string Account;
+    string AccountName;
     string? Comment;
-    decimal? UpdatedValue;
+    decimal? BudgetedValue;
     decimal Amount;
 };
+
+type SumOfAccountData record {
+    string AccountType;
+    string AccountCategory;
+    string BusinessUnit;
+    decimal Balance;
+};
+
+type SumOfExpenseData record {
+    string AccountCategory;
+    string ExpenseType;
+    string BusinessUnit;
+    decimal Balance;
+};
+
+// add income and expense 
+// add category as enum

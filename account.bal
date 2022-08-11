@@ -1,9 +1,9 @@
 import ballerina/sql;
 
-service class AccountRecord {
-    private final readonly & AccountRecordData data;
+service class Account {
+    private final readonly & AccountData data;
 
-    function init(AccountRecordData data) {
+    function init(AccountData data) {
         self.data = data.cloneReadOnly();
     }
 
@@ -11,20 +11,16 @@ service class AccountRecord {
         return self.data.Id;
     }
 
-    resource function get InternalId() returns int? {
-        return self.data.InternalId;
-    }
-
-    resource function get Account() returns string? {
-        return self.data.Account;
+    resource function get AccountName() returns string? {
+        return self.data.AccountName;
     }
 
     resource function get Comment() returns string? {
         return self.data.Comment;
     }
 
-    resource function get UpdatedValue() returns decimal? {
-        return self.data.UpdatedValue;
+    resource function get BudgetedValue() returns decimal? {
+        return self.data.BudgetedValue;
     }
 
     resource function get Amount() returns decimal? {
@@ -33,13 +29,12 @@ service class AccountRecord {
 
 }
 
-function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
+function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns Account[]|error {
 
     sql:ParameterizedQuery query = `SELECT id AS Id, 
-            internalid AS InternalId, 
-            account AS Account, 
+            account AS AccountName, 
             amount as Amount, 
-            mis_updated_value AS UpdatedValue, 
+            mis_updated_value AS BudgetedValue, 
             comment AS Comment
             FROM mis_income
             WHERE account_type = 'Income' AND
@@ -47,17 +42,16 @@ function loadDynamicIncomeAccountData(IncomeAccountFilterCriteria filterCriteria
                   business_unit = ${filterCriteria.businessUnit} AND
                   trandate = ${filterCriteria.trandate}`;
 
-    AccountRecord[]|error response = runQueryAccountRecord(query);
+    Account[]|error response = runQueryAccount(query);
     return response;
 }
 
-function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriteria) returns AccountRecord[]|error {
+function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns Account[]|error {
 
     sql:ParameterizedQuery query = `SELECT id AS Id, 
-            internalid AS InternalId, 
-            account AS Account, 
+            account AS AccountName, 
             amount as Amount, 
-            mis_updated_value AS UpdatedValue, 
+            mis_updated_value AS BudgetedValue, 
             comment AS Comment
             FROM mis_expense
             WHERE account_type = 'Cost of Goods Sold' AND
@@ -66,18 +60,18 @@ function loadDynamicExpenseAccountData(ExpenseAccountFilterCriteria filterCriter
                   business_unit = ${filterCriteria.businessUnit} AND
                   trandate = ${filterCriteria.trandate}`;
 
-    AccountRecord[]|error response = runQueryAccountRecord(query);
+    Account[]|error response = runQueryAccount(query);
     return response;
 }
 
-function runQueryAccountRecord(sql:ParameterizedQuery query) returns AccountRecord[]|error {
-    AccountRecord[]? payload = [];
+function runQueryAccount(sql:ParameterizedQuery query) returns Account[]|error {
+    Account[]? payload = [];
 
     stream<record {}, error?> resultStream = mysqlClient->query(query);
 
     payload = check from var item in resultStream
-        let var accRow = check item.cloneWithType(AccountRecordData)
-        select new AccountRecord(accRow);
+        let var accRow = check item.cloneWithType(AccountData)
+        select new Account(accRow);
 
     if (payload is null) {
         return [];
