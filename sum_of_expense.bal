@@ -43,7 +43,6 @@ function getExpenseTypeBalance(DatePeriodFilterCriteria filterCriteria) returns 
     return response;
 }
 
-
 function runQuerySumOfExpense(sql:ParameterizedQuery query) returns SumOfExpense[]|error {
     SumOfExpense[]? payload = [];
 

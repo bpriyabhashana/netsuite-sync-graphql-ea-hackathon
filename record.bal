@@ -31,7 +31,6 @@ type DateIdFilterCriteria record {
 
 // --------- data records ---------
 
-
 type AccountData record {
     int Id;
     string AccountName;

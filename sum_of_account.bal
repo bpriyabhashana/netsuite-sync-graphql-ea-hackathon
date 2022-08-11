@@ -35,10 +35,9 @@ service class SumOfAccount {
 
 function getAccountBalance(BalanceFilterCriteria filterCriteria) returns SumOfAccount[]|error {
 
-    
-sql:ParameterizedQuery selectQuery = ``;
-sql:ParameterizedQuery fromQuery = ``;
-sql:ParameterizedQuery whereQuery = ``;
+    sql:ParameterizedQuery selectQuery = ``;
+    sql:ParameterizedQuery fromQuery = ``;
+    sql:ParameterizedQuery whereQuery = ``;
 
     selectQuery = `SELECT account_type AS AccountType, 
                    account_category AS AccountCategory, 
@@ -46,13 +45,11 @@ sql:ParameterizedQuery whereQuery = ``;
                    SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
                    AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Balance`;
 
-
-    if(filterCriteria.balanceType == "income") {
+    if (filterCriteria.balanceType == "income") {
         fromQuery = ` FROM mis_income`;
     } else {
-         fromQuery = ` FROM mis_expense`;
+        fromQuery = ` FROM mis_expense`;
     }
-
 
     whereQuery = ` WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
                     trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
@@ -61,7 +58,6 @@ sql:ParameterizedQuery whereQuery = ``;
 
     return response;
 }
-
 
 function runQuerySumOfAccount(sql:ParameterizedQuery query) returns SumOfAccount[]|error {
     SumOfAccount[]? payload = [];
