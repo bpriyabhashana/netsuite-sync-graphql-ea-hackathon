@@ -4,7 +4,7 @@ type IncomeAccountFilterCriteria record {
     string? accountCategory = ();
     string? businessUnit = ();
     string? month = ();
-    string[]? range = ();
+    DatePeriodFilterCriteria? range = ();
 };
 
 type ExpenseAccountFilterCriteria record {
@@ -12,13 +12,13 @@ type ExpenseAccountFilterCriteria record {
     string? businessUnit = ();
     string? expenseType = ();
     string? month = ();
-    string[]? range = ();
+    DatePeriodFilterCriteria? range = ();
 };
 
-type DatePeriodFilterCriteria record {
+type DatePeriodFilterCriteria record {|
     string startDate;
     string endDate;
-};
+|};
 
 // --------- data records ---------
 
@@ -53,11 +53,6 @@ type SumOfExpenseAccountData record {
     string BusinessUnit;
     decimal Balance;
 };
-
-
-
-
-
 
 // expense type data
 type SumOfExpenseData record {

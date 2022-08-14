@@ -46,7 +46,10 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
     if (filterCriteria.expenseType != ()) {
         filter.push(<sql:ParameterizedQuery>` mis_flash_section = ${filterCriteria.expenseType}`);
     }
-    if (filterCriteria.month != ()) {
+    if (filterCriteria.range != () && filterCriteria.range is DatePeriodFilterCriteria) {
+        filter.push(<sql:ParameterizedQuery>` trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
+                  trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7)`);
+    } else if (filterCriteria.month != ()) {
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
@@ -60,14 +63,13 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
 
     sql:ParameterizedQuery dynamicFilter = ` `;
 
-     if (filter.length() > 0) {
-    foreach int i in 0 ..< filter.length() {
+    if (filter.length() > 0) {
+        foreach int i in 0 ..< filter.length() {
 
-        dynamicFilter = (i == 0) ? 
-            sql:queryConcat(dynamicFilter, ` `, filter[i]) : 
-            sql:queryConcat(dynamicFilter, ` AND `, filter[i]);
+            dynamicFilter = sql:queryConcat(dynamicFilter, (i == 0) ? ` ` : (` AND `), filter[i]);
         }
-       query = sql:queryConcat(query, ` WHERE `, dynamicFilter);
+
+        query = sql:queryConcat(query, ` WHERE `, dynamicFilter);
     } else {
         query = query;
     }
