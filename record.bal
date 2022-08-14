@@ -1,22 +1,18 @@
 // --------- filter criterias ---------
 
-type BalanceFilterCriteria record {
-    string balanceType;
-    string startDate;
-    string endDate;
-};
-
 type IncomeAccountFilterCriteria record {
-    string accountCategory;
-    string businessUnit;
-    string trandate;
+    string? accountCategory = ();
+    string? businessUnit = ();
+    string? month = ();
+    string[]? range = ();
 };
 
 type ExpenseAccountFilterCriteria record {
-    string accountCategory;
-    string businessUnit;
-    string categoryType;
-    string trandate;
+    string? accountCategory = ();
+    string? businessUnit = ();
+    string? expenseType = ();
+    string? month = ();
+    string[]? range = ();
 };
 
 type DatePeriodFilterCriteria record {
@@ -24,28 +20,46 @@ type DatePeriodFilterCriteria record {
     string endDate;
 };
 
-type DateIdFilterCriteria record {
-    int id;
-    string yearMonth;
-};
-
 // --------- data records ---------
 
-type AccountData record {
+type IncomeAccountData record {
     int Id;
     string AccountName;
     string? Comment;
     decimal? BudgetedValue;
+    string Month;
     decimal Amount;
 };
 
-type SumOfAccountData record {
+type ExpenseAccountData record {
+    int Id;
+    string AccountName;
+    string? Comment;
+    decimal? BudgetedValue;
+    string Month;
+    decimal Amount;
+};
+
+type SumOfIncomeAccountData record {
     string AccountType;
     string AccountCategory;
     string BusinessUnit;
     decimal Balance;
 };
 
+type SumOfExpenseAccountData record {
+    string AccountType;
+    string AccountCategory;
+    string BusinessUnit;
+    decimal Balance;
+};
+
+
+
+
+
+
+// expense type data
 type SumOfExpenseData record {
     string AccountCategory;
     string ExpenseType;
