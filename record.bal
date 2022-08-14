@@ -54,6 +54,10 @@ type SumOfExpenseAccountData record {
     decimal Balance;
 };
 
+
+
+// ----------- outdated -----------
+
 // expense type data
 type SumOfExpenseData record {
     string AccountCategory;

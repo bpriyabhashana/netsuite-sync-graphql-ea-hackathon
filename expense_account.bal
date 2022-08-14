@@ -65,10 +65,8 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
 
     if (filter.length() > 0) {
         foreach int i in 0 ..< filter.length() {
-
             dynamicFilter = sql:queryConcat(dynamicFilter, (i == 0) ? ` ` : (` AND `), filter[i]);
         }
-
         query = sql:queryConcat(query, ` WHERE `, dynamicFilter);
     } else {
         query = query;

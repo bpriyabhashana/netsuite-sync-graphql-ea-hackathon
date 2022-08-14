@@ -62,7 +62,6 @@ function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns In
 
     if (filter.length() > 0) {
         foreach int i in 0 ..< filter.length() {
-
             dynamicFilter = sql:queryConcat(dynamicFilter, (i == 0) ? ` ` : (` AND `), filter[i]);
         }
         query = sql:queryConcat(query, ` WHERE `, dynamicFilter);
