@@ -16,8 +16,6 @@ service class GroupExpenseAccount {
     }
 
     resource function get ExpenseType() returns string? {
-        // update this
-        io:println("#### ", self.data.ExpenseType);
         return self.data.ExpenseType;
     }
 
