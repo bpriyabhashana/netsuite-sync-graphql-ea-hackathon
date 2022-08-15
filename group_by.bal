@@ -1,6 +1,5 @@
 import ballerina/sql;
-import ballerina/io;
-service class GroupExpenseAccount {
+service class SumOfExpenseAccount {
     private final readonly & SumOfExpenseAccountData data;
 
     function init(SumOfExpenseAccountData data) {
@@ -29,66 +28,59 @@ service class GroupExpenseAccount {
 
 }
 
-function getGroupByExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns GroupExpenseAccount[]|error {
- io:println(filterCriteria);
-
+function getSumOfExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns SumOfExpenseAccount[]|error {
 
 sql:ParameterizedQuery selectQuery = `SELECT `;
-sql:ParameterizedQuery groupBy = `GROUP BY `;
 
+sql:ParameterizedQuery[] groupQuery = [];
+sql:ParameterizedQuery dynamicFilter = ` `;
 
  if <boolean>(filterCriteria.groupBy.AccountType) {
       selectQuery = sql:queryConcat(selectQuery, ` account_type AS AccountType,`);
-      groupBy = sql:queryConcat(groupBy, ` account_type,`);
+      groupQuery.push(<sql:ParameterizedQuery>` account_type`);
     }
 
 if <boolean>(filterCriteria.groupBy.AccountCategory) {
     selectQuery = sql:queryConcat(selectQuery, ` account_category AS AccountCategory,`);
-      groupBy = sql:queryConcat(groupBy, ` account_category,`);
+      groupQuery.push(<sql:ParameterizedQuery>` account_category`);
     }
 
     if <boolean>(filterCriteria.groupBy.ExpenseType) {
     selectQuery = sql:queryConcat(selectQuery, ` mis_flash_section AS ExpenseType,`);
-      groupBy = sql:queryConcat(groupBy, ` mis_flash_section,`);
+       groupQuery.push(<sql:ParameterizedQuery>` mis_flash_section`);
     }
 
     if <boolean>(filterCriteria.groupBy.BusinessUnit) {
          selectQuery = sql:queryConcat(selectQuery, ` business_unit AS BusinessUnit,`);
-      groupBy = sql:queryConcat(groupBy, ` business_unit`);
+       groupQuery.push(<sql:ParameterizedQuery>` business_unit`);
     }
+     foreach int i in 0 ..< groupQuery.length() {
+            dynamicFilter = sql:queryConcat(dynamicFilter, (i != groupQuery.length()-1) ? sql:queryConcat(groupQuery[i], `, `) : groupQuery[i]);
+        }
 
- sql:ParameterizedQuery query = sql:queryConcat(selectQuery, 
-            ` SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
+   
+
+        sql:ParameterizedQuery query = sql:queryConcat(selectQuery, 
+                ` SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
                 AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Balance
                 FROM mis_expense
                 WHERE trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
-                trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7) `, groupBy);
+                trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7) `, (groupQuery.length() != 0)? sql:queryConcat(`GROUP BY`, dynamicFilter) : ` `);
 
-    // sql:ParameterizedQuery query = `SELECT account_type AS AccountType, 
-    //                account_category AS AccountCategory, 
-    //                business_unit AS BusinessUnit, 
-    //                SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
-    //                AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Balance
-    //                 FROM mis_income
-    //                 WHERE trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
-    //                 trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7)
-    //                 GROUP BY account_type, account_category, business_unit`;
 
-            io:println(query);
-
-             GroupExpenseAccount[]|error response = runQueryGroupExpenseAccounts(query);
+             SumOfExpenseAccount[]|error response = runQueryGroupExpenseAccounts(query);
 
     return response;
 }
 
-function runQueryGroupExpenseAccounts(sql:ParameterizedQuery query) returns GroupExpenseAccount[]|error {
-    GroupExpenseAccount[]? payload = [];
+function runQueryGroupExpenseAccounts(sql:ParameterizedQuery query) returns SumOfExpenseAccount[]|error {
+    SumOfExpenseAccount[]? payload = [];
 
     stream<record {}, error?> resultStream = mysqlClient->query(query);
 
     payload = check from var item in resultStream
         let var accRow = check item.cloneWithType(SumOfExpenseAccountData)
-        select new GroupExpenseAccount(accRow);
+        select new SumOfExpenseAccount(accRow);
 
     if (payload is null) {
         return [];

@@ -17,14 +17,14 @@ service /graphql on new graphql:Listener(9090) {
         return getSumOfIncomeAccounts(filterCriteria);
     }
 
-    resource function get sumOfExpenseAccounts(DatePeriodFilterCriteria filterCriteria) returns SumOfExpenseAccount[]|error? {
+    resource function get sumOfExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns SumOfExpenseAccount[]|error? {
 
         return getSumOfExpenseAccounts(filterCriteria);
     }
 
-    resource function get groupByExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns GroupExpenseAccount[]|error? {
+    // resource function get groupByExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns GroupExpenseAccount[]|error? {
 
-        return getGroupByExpenseAccounts(filterCriteria);
-    }
+    //     return getGroupByExpenseAccounts(filterCriteria);
+    // }
 
 }
