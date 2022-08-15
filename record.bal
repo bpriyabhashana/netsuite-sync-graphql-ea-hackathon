@@ -15,6 +15,18 @@ type ExpenseAccountFilterCriteria record {
     DatePeriodFilterCriteria? range = ();
 };
 
+type ExpenseAccountGroupFilterCriteria record {
+    DatePeriodFilterCriteria range;
+    GroupByFilterCriteria groupBy;
+};
+
+type GroupByFilterCriteria record {
+    boolean? AccountType;
+    boolean? AccountCategory;
+    boolean? ExpenseType;
+    boolean? BusinessUnit;
+};
+
 type DatePeriodFilterCriteria record {|
     string startDate;
     string endDate;
@@ -48,9 +60,10 @@ type SumOfIncomeAccountData record {
 };
 
 type SumOfExpenseAccountData record {
-    string AccountType;
-    string AccountCategory;
-    string BusinessUnit;
+    string? AccountType = ();
+    string? AccountCategory = ();
+    string? BusinessUnit = ();
+    string? ExpenseType = ();
     decimal Balance;
 };
 

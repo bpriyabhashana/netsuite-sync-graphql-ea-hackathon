@@ -22,4 +22,9 @@ service /graphql on new graphql:Listener(9090) {
         return getSumOfExpenseAccounts(filterCriteria);
     }
 
+    resource function get groupByExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns GroupExpenseAccount[]|error? {
+
+        return getGroupByExpenseAccounts(filterCriteria);
+    }
+
 }
