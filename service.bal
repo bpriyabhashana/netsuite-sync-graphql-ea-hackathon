@@ -12,7 +12,7 @@ service /graphql on new graphql:Listener(9090) {
         return getExpenseAccount(filterCriteria);
     }
 
-    resource function get sumOfIncomeAccounts(DatePeriodFilterCriteria filterCriteria) returns SumOfIncomeAccount[]|error? {
+    resource function get sumOfIncomeAccounts(IncomeAccountGroupFilterCriteria filterCriteria) returns SumOfIncomeAccount[]|error? {
 
         return getSumOfIncomeAccounts(filterCriteria);
     }
@@ -21,10 +21,5 @@ service /graphql on new graphql:Listener(9090) {
 
         return getSumOfExpenseAccounts(filterCriteria);
     }
-
-    // resource function get groupByExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns GroupExpenseAccount[]|error? {
-
-    //     return getGroupByExpenseAccounts(filterCriteria);
-    // }
 
 }

@@ -17,13 +17,25 @@ type ExpenseAccountFilterCriteria record {
 
 type ExpenseAccountGroupFilterCriteria record {
     DatePeriodFilterCriteria range;
-    GroupByFilterCriteria groupBy;
+    ExpenseGroupByFilter groupBy;
 };
 
-type GroupByFilterCriteria record {
+type ExpenseGroupByFilter record {
     boolean? AccountType;
     boolean? AccountCategory;
     boolean? ExpenseType;
+    boolean? BusinessUnit;
+};
+
+type IncomeAccountGroupFilterCriteria record {
+    DatePeriodFilterCriteria range;
+    IncomeGroupByFilter groupBy;
+};
+
+type IncomeGroupByFilter record {
+    boolean? AccountType;
+    boolean? AccountCategory;
+    boolean? IncomeType;
     boolean? BusinessUnit;
 };
 
@@ -53,9 +65,10 @@ type ExpenseAccountData record {
 };
 
 type SumOfIncomeAccountData record {
-    string AccountType;
-    string AccountCategory;
-    string BusinessUnit;
+    string? AccountType = ();
+    string? AccountCategory = ();
+    string? BusinessUnit = ();
+    string? IncomeType = ();
     decimal Balance;
 };
 
@@ -66,18 +79,3 @@ type SumOfExpenseAccountData record {
     string? ExpenseType = ();
     decimal Balance;
 };
-
-
-
-// ----------- outdated -----------
-
-// expense type data
-type SumOfExpenseData record {
-    string AccountCategory;
-    string ExpenseType;
-    string BusinessUnit;
-    decimal Balance;
-};
-
-// add income and expense 
-// add category as enum

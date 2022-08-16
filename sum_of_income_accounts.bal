@@ -15,6 +15,10 @@ service class SumOfIncomeAccount {
         return self.data.AccountCategory;
     }
 
+    resource function get IncomeType() returns string? {
+        return self.data.IncomeType;
+    }
+
     resource function get BusinessUnit() returns string? {
         return self.data.BusinessUnit;
     }
@@ -25,32 +29,48 @@ service class SumOfIncomeAccount {
 
 }
 
-# Load income summary data based on startDate, endDate
-# e.g. startDate: "2021-02", endDate: "2021-09"
-# the result will be group by account_type, account_category, business_unit
-# if the query execution succeeded, it returns the SummaryRecord
-#
-# + filterCriteria - (refer records.bal for more details)  
-# + return - SummaryRecord[]|error  
+function getSumOfIncomeAccounts(IncomeAccountGroupFilterCriteria filterCriteria) returns SumOfIncomeAccount[]|error {
 
-function getSumOfIncomeAccounts(DatePeriodFilterCriteria filterCriteria) returns SumOfIncomeAccount[]|error {
+    sql:ParameterizedQuery selectQuery = ` `;
+    sql:ParameterizedQuery dynamicFilter = ` `;
+    sql:ParameterizedQuery[] groupQuery = [];
 
-    sql:ParameterizedQuery query = `SELECT account_type AS AccountType, 
-                   account_category AS AccountCategory, 
-                   business_unit AS BusinessUnit, 
-                   SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
-                   AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Balance
-                    FROM mis_income
-                    WHERE trandate > SUBSTRING(${filterCriteria.startDate}, 1, 7) AND 
-                    trandate <= SUBSTRING(${filterCriteria.endDate}, 1, 7)
-                    GROUP BY account_type, account_category, business_unit`;
+    if <boolean>filterCriteria.groupBy.AccountType {
+        selectQuery = sql:queryConcat(selectQuery, ` account_type AS AccountType,`);
+        groupQuery.push(<sql:ParameterizedQuery>` account_type`);
+    }
 
-    SumOfIncomeAccount[]|error response = runQuerySumOfIncomeAccounts(query);
+    if <boolean>filterCriteria.groupBy.AccountCategory {
+        selectQuery = sql:queryConcat(selectQuery, ` account_category AS AccountCategory,`);
+        groupQuery.push(<sql:ParameterizedQuery>` account_category`);
+    }
+
+    if <boolean>filterCriteria.groupBy.IncomeType {
+        selectQuery = sql:queryConcat(selectQuery, ` mis_flash_section AS IncomeType,`);
+        groupQuery.push(<sql:ParameterizedQuery>` mis_flash_section`);
+    }
+
+    if <boolean>filterCriteria.groupBy.BusinessUnit {
+        selectQuery = sql:queryConcat(selectQuery, ` business_unit AS BusinessUnit,`);
+        groupQuery.push(<sql:ParameterizedQuery>` business_unit`);
+    }
+    foreach int i in 0 ..< groupQuery.length() {
+        dynamicFilter = sql:queryConcat(dynamicFilter, (i != groupQuery.length() - 1) ? sql:queryConcat(groupQuery[i], `, `) : groupQuery[i]);
+    }
+
+    sql:ParameterizedQuery query = sql:queryConcat(`SELECT `, selectQuery,
+            ` SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
+                AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Balance
+                FROM mis_income
+                WHERE trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
+                trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7) `, (groupQuery.length() != 0) ? sql:queryConcat(`GROUP BY`, dynamicFilter) : ` `);
+
+    SumOfIncomeAccount[]|error response = runQueryGroupIncomeAccounts(query);
 
     return response;
 }
 
-function runQuerySumOfIncomeAccounts(sql:ParameterizedQuery query) returns SumOfIncomeAccount[]|error {
+function runQueryGroupIncomeAccounts(sql:ParameterizedQuery query) returns SumOfIncomeAccount[]|error {
     SumOfIncomeAccount[]? payload = [];
 
     stream<record {}, error?> resultStream = mysqlClient->query(query);
@@ -59,7 +79,7 @@ function runQuerySumOfIncomeAccounts(sql:ParameterizedQuery query) returns SumOf
         let var accRow = check item.cloneWithType(SumOfIncomeAccountData)
         select new SumOfIncomeAccount(accRow);
 
-    if (payload is null) {
+    if (payload is ()) {
         return [];
     }
     return payload;

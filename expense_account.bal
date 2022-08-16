@@ -43,13 +43,13 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
     if (filterCriteria.businessUnit != () && filterCriteria.businessUnit != "") {
         filter.push(<sql:ParameterizedQuery>` business_unit = ${filterCriteria.businessUnit}`);
     }
-    if (filterCriteria.expenseType != ()  && filterCriteria.expenseType != "") {
+    if (filterCriteria.expenseType != () && filterCriteria.expenseType != "") {
         filter.push(<sql:ParameterizedQuery>` mis_flash_section = ${filterCriteria.expenseType}`);
     }
     if (filterCriteria.range != () && filterCriteria.range is DatePeriodFilterCriteria) {
         filter.push(<sql:ParameterizedQuery>` trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7)`);
-    } else if (filterCriteria.month != ()  && filterCriteria.month != "") {
+    } else if (filterCriteria.month != () && filterCriteria.month != "") {
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
