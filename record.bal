@@ -21,10 +21,10 @@ type ExpenseAccountGroupFilterCriteria record {
 };
 
 type ExpenseGroupByFilter record {
-    boolean? AccountType;
-    boolean? AccountCategory;
-    boolean? ExpenseType;
-    boolean? BusinessUnit;
+    boolean? accountType;
+    boolean? accountCategory;
+    boolean? expenseType;
+    boolean? businessUnit;
 };
 
 type IncomeAccountGroupFilterCriteria record {
@@ -33,10 +33,10 @@ type IncomeAccountGroupFilterCriteria record {
 };
 
 type IncomeGroupByFilter record {
-    boolean? AccountType;
-    boolean? AccountCategory;
-    boolean? IncomeType;
-    boolean? BusinessUnit;
+    boolean? accountType;
+    boolean? accountCategory;
+    boolean? incomeType;
+    boolean? businessUnit;
 };
 
 type DatePeriodFilterCriteria record {|
@@ -47,35 +47,35 @@ type DatePeriodFilterCriteria record {|
 // --------- data records ---------
 
 type IncomeAccountData record {
-    int Id;
-    string AccountName;
-    string? Comment;
-    decimal? BudgetedValue;
-    string Month;
-    decimal Amount;
+    int id;
+    string accountName;
+    string? comment;
+    decimal? budgetedValue;
+    string month;
+    decimal amount;
 };
 
 type ExpenseAccountData record {
-    int Id;
-    string AccountName;
-    string? Comment;
-    decimal? BudgetedValue;
-    string Month;
-    decimal Amount;
+    int id;
+    string accountName;
+    string? comment;
+    decimal? budgetedValue;
+    string month;
+    decimal amount;
 };
 
 type SumOfIncomeAccountData record {
-    string? AccountType = ();
-    string? AccountCategory = ();
-    string? BusinessUnit = ();
-    string? IncomeType = ();
-    decimal Balance;
+    string? accountType = ();
+    string? accountCategory = ();
+    string? businessUnit = ();
+    string? incomeType = ();
+    decimal balance;
 };
 
 type SumOfExpenseAccountData record {
-    string? AccountType = ();
-    string? AccountCategory = ();
-    string? BusinessUnit = ();
-    string? ExpenseType = ();
-    decimal Balance;
+    string? accountType = ();
+    string? accountCategory = ();
+    string? businessUnit = ();
+    string? expenseType = ();
+    decimal balance;
 };

@@ -7,28 +7,28 @@ service class IncomeAccount {
         self.data = data.cloneReadOnly();
     }
 
-    resource function get Id() returns int? {
-        return self.data.Id;
+    resource function get id() returns int? {
+        return self.data.id;
     }
 
-    resource function get AccountName() returns string? {
-        return self.data.AccountName;
+    resource function get accountName() returns string? {
+        return self.data.accountName;
     }
 
-    resource function get Comment() returns string? {
-        return self.data.Comment;
+    resource function get comment() returns string? {
+        return self.data.comment;
     }
 
-    resource function get Month() returns string? {
-        return self.data.Month;
+    resource function get month() returns string? {
+        return self.data.month;
     }
 
-    resource function get BudgetedValue() returns decimal? {
-        return self.data.BudgetedValue;
+    resource function get budgetedValue() returns decimal? {
+        return self.data.budgetedValue;
     }
 
-    resource function get Amount() returns decimal? {
-        return self.data.Amount;
+    resource function get amount() returns decimal? {
+        return self.data.amount;
     }
 
 }
@@ -50,12 +50,12 @@ function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns In
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
-    sql:ParameterizedQuery query = `SELECT id AS Id, 
-            account AS AccountName, 
-            amount AS Amount, 
-            mis_updated_value AS BudgetedValue, 
-            comment AS Comment,
-            tranDate AS Month
+    sql:ParameterizedQuery query = `SELECT id AS id, 
+            account AS accountName, 
+            amount AS amount, 
+            mis_updated_value AS budgetedValue, 
+            comment AS comment,
+            tranDate AS month
             FROM mis_income`;
 
     sql:ParameterizedQuery dynamicFilter = ` `;
@@ -82,8 +82,5 @@ function runQueryIncomeAccount(sql:ParameterizedQuery query) returns IncomeAccou
         let var accRow = check item.cloneWithType(IncomeAccountData)
         select new IncomeAccount(accRow);
 
-    if (payload is null) {
-        return [];
-    }
-    return payload;
+    return payload ?: [];
 }

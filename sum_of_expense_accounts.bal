@@ -7,24 +7,24 @@ service class SumOfExpenseAccount {
         self.data = data.cloneReadOnly();
     }
 
-    resource function get AccountType() returns string? {
-        return self.data.AccountType;
+    resource function get accountType() returns string? {
+        return self.data.accountType;
     }
 
-    resource function get AccountCategory() returns string? {
-        return self.data.AccountCategory;
+    resource function get accountCategory() returns string? {
+        return self.data.accountCategory;
     }
 
-    resource function get ExpenseType() returns string? {
-        return self.data.ExpenseType;
+    resource function get expenseType() returns string? {
+        return self.data.expenseType;
     }
 
-    resource function get BusinessUnit() returns string? {
-        return self.data.BusinessUnit;
+    resource function get businessUnit() returns string? {
+        return self.data.businessUnit;
     }
 
-    resource function get Balance() returns decimal? {
-        return self.data.Balance;
+    resource function get balance() returns decimal? {
+        return self.data.balance;
     }
 
 }
@@ -35,23 +35,23 @@ function getSumOfExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteri
     sql:ParameterizedQuery dynamicFilter = ` `;
     sql:ParameterizedQuery[] groupQuery = [];
 
-    if <boolean>filterCriteria.groupBy.AccountType {
-        selectQuery = sql:queryConcat(selectQuery, ` account_type AS AccountType,`);
+    if <boolean>filterCriteria.groupBy.accountType {
+        selectQuery = sql:queryConcat(selectQuery, ` account_type AS accountType,`);
         groupQuery.push(<sql:ParameterizedQuery>` account_type`);
     }
 
-    if <boolean>filterCriteria.groupBy.AccountCategory {
-        selectQuery = sql:queryConcat(selectQuery, ` account_category AS AccountCategory,`);
+    if <boolean>filterCriteria.groupBy.accountCategory {
+        selectQuery = sql:queryConcat(selectQuery, ` account_category AS accountCategory,`);
         groupQuery.push(<sql:ParameterizedQuery>` account_category`);
     }
 
-    if <boolean>filterCriteria.groupBy.ExpenseType {
-        selectQuery = sql:queryConcat(selectQuery, ` mis_flash_section AS ExpenseType,`);
+    if <boolean>filterCriteria.groupBy.expenseType {
+        selectQuery = sql:queryConcat(selectQuery, ` mis_flash_section AS expenseType,`);
         groupQuery.push(<sql:ParameterizedQuery>` mis_flash_section`);
     }
 
-    if <boolean>filterCriteria.groupBy.BusinessUnit {
-        selectQuery = sql:queryConcat(selectQuery, ` business_unit AS BusinessUnit,`);
+    if <boolean>filterCriteria.groupBy.businessUnit {
+        selectQuery = sql:queryConcat(selectQuery, ` business_unit AS businessUnit,`);
         groupQuery.push(<sql:ParameterizedQuery>` business_unit`);
     }
     foreach int i in 0 ..< groupQuery.length() {
@@ -60,7 +60,7 @@ function getSumOfExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteri
 
     sql:ParameterizedQuery query = sql:queryConcat(`SELECT `, selectQuery,
                 ` SUM((CASE WHEN (DATE_FORMAT(UTC_TIMESTAMP() - INTERVAL 1 MONTH, '%Y-%m') = trandate) 
-                AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS Balance
+                AND (DAY(UTC_TIMESTAMP()) <= ${dateCutoff}) THEN COALESCE(mis_updated_value, amount) ELSE amount END)) AS balance
                 FROM mis_expense
                 WHERE trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
                 trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7) `, (groupQuery.length() != 0) ? sql:queryConcat(`GROUP BY`, dynamicFilter) : ` `);
@@ -79,8 +79,5 @@ function runQueryGroupExpenseAccounts(sql:ParameterizedQuery query) returns SumO
         let var accRow = check item.cloneWithType(SumOfExpenseAccountData)
         select new SumOfExpenseAccount(accRow);
 
-    if payload is () {
-        return [];
-    }
-    return payload;
+    return payload ?: [];
 }

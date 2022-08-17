@@ -7,28 +7,28 @@ service class ExpenseAccount {
         self.data = data.cloneReadOnly();
     }
 
-    resource function get Id() returns int? {
-        return self.data.Id;
+    resource function get id() returns int? {
+        return self.data.id;
     }
 
-    resource function get AccountName() returns string? {
-        return self.data.AccountName;
+    resource function get accountName() returns string? {
+        return self.data.accountName;
     }
 
-    resource function get Comment() returns string? {
-        return self.data.Comment;
+    resource function get comment() returns string? {
+        return self.data.comment;
     }
 
-    resource function get Month() returns string? {
-        return self.data.Month;
+    resource function get month() returns string? {
+        return self.data.month;
     }
 
-    resource function get BudgetedValue() returns decimal? {
-        return self.data.BudgetedValue;
+    resource function get budgetedValue() returns decimal? {
+        return self.data.budgetedValue;
     }
 
-    resource function get Amount() returns decimal? {
-        return self.data.Amount;
+    resource function get amount() returns decimal? {
+        return self.data.amount;
     }
 
 }
@@ -53,12 +53,12 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
-    sql:ParameterizedQuery query = `SELECT id AS Id, 
-            account AS AccountName, 
-            amount as Amount, 
-            mis_updated_value AS BudgetedValue, 
-            comment AS Comment,
-            tranDate AS Month
+    sql:ParameterizedQuery query = `SELECT id AS id, 
+            account AS accountName, 
+            amount as amount, 
+            mis_updated_value AS budgetedValue, 
+            comment AS comment,
+            tranDate AS month
             FROM mis_expense`;
 
     sql:ParameterizedQuery dynamicFilter = ` `;
@@ -85,8 +85,5 @@ function runQueryExpenseAccount(sql:ParameterizedQuery query) returns ExpenseAcc
         let var accRow = check item.cloneWithType(ExpenseAccountData)
         select new ExpenseAccount(accRow);
 
-    if (payload is null) {
-        return [];
-    }
-    return payload;
+    return payload ?: [];
 }
