@@ -36,7 +36,9 @@ service class ExpenseAccount {
 function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns ExpenseAccount[]|error {
 
     sql:ParameterizedQuery[] filter = [];
-
+    if filterCriteria.id != () && filterCriteria.id != () {
+        filter.push(<sql:ParameterizedQuery>` id = ${filterCriteria.id}`);
+    }
     if filterCriteria.accountCategory != () && filterCriteria.accountCategory != "" {
         filter.push(<sql:ParameterizedQuery>` account_category = ${filterCriteria.accountCategory}`);
     }

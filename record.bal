@@ -1,6 +1,7 @@
 // --------- filter criterias ---------
 
 type IncomeAccountFilterCriteria record {
+    int? id = ();
     string? accountCategory = ();
     string? businessUnit = ();
     string? month = ();
@@ -8,6 +9,7 @@ type IncomeAccountFilterCriteria record {
 };
 
 type ExpenseAccountFilterCriteria record {
+    int? id = ();
     string? accountCategory = ();
     string? businessUnit = ();
     string? expenseType = ();
@@ -44,6 +46,21 @@ type DatePeriodFilterCriteria record {|
     string endDate;
 |};
 
+public type IncomeExpAcValUpdParameterRecord record {
+    int id;
+    decimal value;
+    string? comment;
+};
+
+public type IncExpTrandateByIDRequestRecord record {
+    int id;
+    string prevYearMonth;
+};
+
+public type IncExpTrandateByIDRespRecord record {
+    int isPrevMonth;
+};
+
 // --------- data records ---------
 
 type IncomeAccountData record {
@@ -78,4 +95,8 @@ type SumOfExpenseAccountData record {
     string? businessUnit = ();
     string? expenseType = ();
     decimal balance;
+};
+
+type UpdatedRecord record {
+    string? id;
 };
