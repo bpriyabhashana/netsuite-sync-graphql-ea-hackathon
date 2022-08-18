@@ -37,16 +37,16 @@ function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns In
 
     sql:ParameterizedQuery[] filter = [];
 
-    if (filterCriteria.accountCategory != () && filterCriteria.accountCategory != "") {
+    if filterCriteria.accountCategory != () && filterCriteria.accountCategory != "" {
         filter.push(<sql:ParameterizedQuery>` account_category = ${filterCriteria.accountCategory}`);
     }
-    if (filterCriteria.businessUnit != () && filterCriteria.businessUnit != "") {
+    if filterCriteria.businessUnit != () && filterCriteria.businessUnit != "" {
         filter.push(<sql:ParameterizedQuery>` business_unit = ${filterCriteria.businessUnit}`);
     }
-    if (filterCriteria.range != () && filterCriteria.range is DatePeriodFilterCriteria) {
+    if filterCriteria.range != () && filterCriteria.range is DatePeriodFilterCriteria {
         filter.push(<sql:ParameterizedQuery>` trandate > SUBSTRING(${filterCriteria.range?.startDate}, 1, 7) AND 
                   trandate <= SUBSTRING(${filterCriteria.range?.endDate}, 1, 7)`);
-    } else if (filterCriteria.month != () && filterCriteria.month != "") {
+    } else if filterCriteria.month != () && filterCriteria.month != "" {
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
@@ -60,7 +60,7 @@ function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns In
 
     sql:ParameterizedQuery dynamicFilter = ` `;
 
-    if (filter.length() > 0) {
+    if filter.length() > 0 {
         foreach int i in 0 ..< filter.length() {
             dynamicFilter = sql:queryConcat(dynamicFilter, (i == 0) ? ` ` : (` AND `), filter[i]);
         }
