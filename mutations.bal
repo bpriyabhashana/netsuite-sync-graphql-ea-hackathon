@@ -22,7 +22,7 @@ function updateExpenseAccount(IncomeExpAcValUpdParameterRecord payload) returns 
 
      do {
             if check isCutoffDateNotPassed() 
-            // && check isPreviousMonth(payload, INCOME)
+            // && check isPreviousMonth(payload, EXPENSE)
              {
                 json _ = check updateNSExpenseAccountValue(payload);
 
