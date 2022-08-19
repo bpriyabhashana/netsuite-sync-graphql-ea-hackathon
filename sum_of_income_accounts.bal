@@ -79,5 +79,5 @@ function runQueryGroupIncomeAccounts(sql:ParameterizedQuery query) returns SumOf
         let var accRow = check item.cloneWithType(SumOfIncomeAccountData)
         select new SumOfIncomeAccount(accRow);
 
-   return payload ?: [];
+    return payload ?: [];
 }

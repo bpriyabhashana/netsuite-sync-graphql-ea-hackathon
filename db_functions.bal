@@ -1,4 +1,5 @@
 import ballerina/sql;
+
 public function getExpenseRecordTrandateByID(IncExpTrandateByIDRequestRecord incExpTrandateByIDRequestRecord) returns json|error {
 
     json expenseTrandate = {};

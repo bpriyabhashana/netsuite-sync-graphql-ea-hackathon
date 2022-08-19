@@ -16,7 +16,6 @@ final mysql:Client mysqlClient = check new (host = dbHost,
                                     database = dbName,
                                     port = dbPort);
 
-
 function isCutoffDateNotPassed() returns boolean|error {
     // Get the current epoch time
     time:Utc utc = time:utcNow();

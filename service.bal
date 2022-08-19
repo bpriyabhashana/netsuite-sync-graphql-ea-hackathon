@@ -23,15 +23,15 @@ service /graphql on new graphql:Listener(9090) {
     }
 
     remote function updateIncomeAccount(IncomeExpAcValUpdParameterRecord payload) returns IncomeAccount[]|error {
-        
+
         return check updateIncomeAccount(payload);
-        
+
     }
 
     remote function updateExpenseAccount(IncomeExpAcValUpdParameterRecord payload) returns ExpenseAccount[]|error {
-        
+
         return check updateExpenseAccount(payload);
-        
+
     }
 
 }
