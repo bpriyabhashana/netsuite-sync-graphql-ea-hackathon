@@ -1,38 +1,5 @@
 import ballerina/sql;
 
-service class ExpenseAccount {
-    private final readonly & ExpenseAccountData data;
-
-    function init(ExpenseAccountData data) {
-        self.data = data.cloneReadOnly();
-    }
-
-    resource function get id() returns int? {
-        return self.data.id;
-    }
-
-    resource function get accountName() returns string? {
-        return self.data.accountName;
-    }
-
-    resource function get comment() returns string? {
-        return self.data.comment;
-    }
-
-    resource function get month() returns string? {
-        return self.data.month;
-    }
-
-    resource function get budgetedValue() returns decimal? {
-        return self.data.budgetedValue;
-    }
-
-    resource function get amount() returns decimal? {
-        return self.data.amount;
-    }
-
-}
-
 function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns ExpenseAccount[]|error {
 
     sql:ParameterizedQuery[] filter = [];
@@ -55,11 +22,11 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
-    sql:ParameterizedQuery query = `SELECT id AS id, 
+    sql:ParameterizedQuery query = `SELECT id, 
             account AS accountName, 
-            amount as amount, 
+            amount, 
             mis_updated_value AS budgetedValue, 
-            comment AS comment,
+            comment,
             tranDate AS month
             FROM mis_expense`;
 
@@ -79,13 +46,12 @@ function getExpenseAccount(ExpenseAccountFilterCriteria filterCriteria) returns 
 }
 
 function runQueryExpenseAccount(sql:ParameterizedQuery query) returns ExpenseAccount[]|error {
-    ExpenseAccount[]? payload = [];
 
-    stream<record {}, error?> resultStream = mysqlClient->query(query);
+    stream<ExpenseAccount, error?> resultStream = mysqlClient->query(query);
 
-    payload = check from var item in resultStream
-        let var accRow = check item.cloneWithType(ExpenseAccountData)
-        select new ExpenseAccount(accRow);
+    ExpenseAccount[]? payload = check
+        from ExpenseAccount data in resultStream
+    select data;
 
     return payload ?: [];
 }

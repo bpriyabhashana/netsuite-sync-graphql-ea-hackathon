@@ -1,34 +1,5 @@
 import ballerina/sql;
 
-service class SumOfExpenseAccount {
-    private final readonly & SumOfExpenseAccountData data;
-
-    function init(SumOfExpenseAccountData data) {
-        self.data = data.cloneReadOnly();
-    }
-
-    resource function get accountType() returns string? {
-        return self.data.accountType;
-    }
-
-    resource function get accountCategory() returns string? {
-        return self.data.accountCategory;
-    }
-
-    resource function get expenseType() returns string? {
-        return self.data.expenseType;
-    }
-
-    resource function get businessUnit() returns string? {
-        return self.data.businessUnit;
-    }
-
-    resource function get balance() returns decimal? {
-        return self.data.balance;
-    }
-
-}
-
 function getSumOfExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteria) returns SumOfExpenseAccount[]|error {
 
     sql:ParameterizedQuery selectQuery = ` `;
@@ -71,13 +42,12 @@ function getSumOfExpenseAccounts(ExpenseAccountGroupFilterCriteria filterCriteri
 }
 
 function runQueryGroupExpenseAccounts(sql:ParameterizedQuery query) returns SumOfExpenseAccount[]|error {
-    SumOfExpenseAccount[]? payload = [];
 
-    stream<record {}, error?> resultStream = mysqlClient->query(query);
+    stream<SumOfExpenseAccount, error?> resultStream = mysqlClient->query(query);
 
-    payload = check from var item in resultStream
-        let var accRow = check item.cloneWithType(SumOfExpenseAccountData)
-        select new SumOfExpenseAccount(accRow);
+    SumOfExpenseAccount[]? payload = check
+        from SumOfExpenseAccount data in resultStream
+    select data;
 
     return payload ?: [];
 }

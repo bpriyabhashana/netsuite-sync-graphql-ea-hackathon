@@ -1,38 +1,5 @@
 import ballerina/sql;
 
-service class IncomeAccount {
-    private final readonly & IncomeAccountData data;
-
-    function init(IncomeAccountData data) {
-        self.data = data.cloneReadOnly();
-    }
-
-    resource function get id() returns int? {
-        return self.data.id;
-    }
-
-    resource function get accountName() returns string? {
-        return self.data.accountName;
-    }
-
-    resource function get comment() returns string? {
-        return self.data.comment;
-    }
-
-    resource function get month() returns string? {
-        return self.data.month;
-    }
-
-    resource function get budgetedValue() returns decimal? {
-        return self.data.budgetedValue;
-    }
-
-    resource function get amount() returns decimal? {
-        return self.data.amount;
-    }
-
-}
-
 function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns IncomeAccount[]|error {
 
     sql:ParameterizedQuery[] filter = [];
@@ -53,11 +20,11 @@ function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns In
         filter.push(<sql:ParameterizedQuery>` trandate = ${filterCriteria.month}`);
     }
 
-    sql:ParameterizedQuery query = `SELECT id AS id, 
+    sql:ParameterizedQuery query = `SELECT id, 
             account AS accountName, 
-            amount AS amount, 
+            amount, 
             mis_updated_value AS budgetedValue, 
-            comment AS comment,
+            comment,
             tranDate AS month
             FROM mis_income`;
 
@@ -72,18 +39,16 @@ function getIncomeAccount(IncomeAccountFilterCriteria filterCriteria) returns In
         query = query;
     }
 
-    IncomeAccount[]|error response = runQueryIncomeAccount(query);
-    return response;
+    return runQueryIncomeAccount(query);
 }
 
 function runQueryIncomeAccount(sql:ParameterizedQuery query) returns IncomeAccount[]|error {
-    IncomeAccount[]? payload = [];
 
-    stream<record {}, error?> resultStream = mysqlClient->query(query);
+    stream<IncomeAccount, error?> resultStream = mysqlClient->query(query);
 
-    payload = check from var item in resultStream
-        let var accRow = check item.cloneWithType(IncomeAccountData)
-        select new IncomeAccount(accRow);
+    IncomeAccount[]? payload = check
+        from IncomeAccount data in resultStream
+    select data;
 
     return payload ?: [];
 }

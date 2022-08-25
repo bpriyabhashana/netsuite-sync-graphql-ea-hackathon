@@ -63,38 +63,38 @@ public type IncExpTrandateByIDRespRecord record {
 
 // --------- data records ---------
 
-type IncomeAccountData record {
+type IncomeAccount record {
     int id;
     string accountName;
     string? comment;
-    decimal? budgetedValue;
+    float? budgetedValue;
     string month;
-    decimal amount;
+    float amount;
 };
 
-type ExpenseAccountData record {
+type ExpenseAccount record {
     int id;
     string accountName;
     string? comment;
-    decimal? budgetedValue;
+    float? budgetedValue;
     string month;
-    decimal amount;
+    float amount;
 };
 
-type SumOfIncomeAccountData record {
+type SumOfIncomeAccount record {
     string? accountType = ();
     string? accountCategory = ();
     string? businessUnit = ();
     string? incomeType = ();
-    decimal balance;
+    float balance;
 };
 
-type SumOfExpenseAccountData record {
+type SumOfExpenseAccount record {
     string? accountType = ();
     string? accountCategory = ();
     string? businessUnit = ();
     string? expenseType = ();
-    decimal balance;
+    float balance;
 };
 
 type UpdatedRecord record {
