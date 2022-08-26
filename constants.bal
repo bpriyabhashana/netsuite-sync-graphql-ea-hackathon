@@ -1,4 +1,4 @@
-const dateCutoff = 25;
+const dateCutoff = 15;
 
 # Income and Expense type
 const INCOME = "income";
